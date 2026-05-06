@@ -42,9 +42,40 @@ app.MapGet("/produtos/{id:int}", (int id) =>
     }
 } );
 
+app.MapPost("/produtos", (Produto produtoReq) =>
+{
+   produtos.Add(produtoReq); 
+   return Results.Created($"/produtos/{produtoReq.Id}",produtoReq);
+});
 
 
+app.MapPut("/produtos/{id:int}",  (int id, Produto produtoAtualizado) =>
+{
+    int index = produtos.FindIndex(produto => produto.Id == id);
+    if(index == -1)
+    {
+        return Results.NotFound();
+    }
+    else
+    {
+        produtos[index] = produtoAtualizado;
+        return Results.Ok(produtos[index]);
+    }
+});
 
+app.MapDelete("/produtos/{id:int}", (int id) =>
+{
+    int index = produtos.FindIndex(x => x.Id == id);
+    if(index == -1)
+    {
+        return Results.NotFound();
+    }
+    else
+    {
+        produtos.RemoveAt(index);
+        return Results.NoContent();
+    }
+});
 
 
 app.Run();
