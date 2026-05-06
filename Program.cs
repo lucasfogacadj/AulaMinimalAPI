@@ -1,81 +1,95 @@
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlite("Data Source=produtos.db"));
+
 var app = builder.Build();
 
-app.MapGet("/", () => "API de Produtos - Minimal API com .NET 10");
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.EnsureCreated();
 
-app.MapGet("/status", () => new 
+    if (!db.Produtos.Any())
+    {
+        db.Produtos.AddRange(
+            new Produto { Nome = "Produto A", Preco = 10.99m, Ativo = true },
+            new Produto { Nome = "Produto B", Preco = 20.50m, Ativo = true },
+            new Produto { Nome = "Produto C", Preco = 15.75m, Ativo = false }
+        );
+
+        db.SaveChanges();
+    }
+}
+
+app.MapGet("/", () => "API de Produtos - Minimal API com .NET 10 + EF Core + SQLite");
+
+app.MapGet("/status", () => new
 {
     status = "online",
     mensagem = "API Funcionando",
+    bancoDeDados = "SQLite",
     dataHora = DateTime.Now
 });
 
-List<Produto> produtos = new List<Produto>
+app.MapGet("/produtos", async (AppDbContext db) =>
 {
-    new Produto { Id = 1, Nome = "Produto A", Preco = 10.99m, Ativo = true },
-    new Produto { Id = 2, Nome = "Produto B", Preco = 20.50m, Ativo = true },
-    new Produto { Id = 3, Nome = "Produto C", Preco = 15.75m, Ativo = false }
-};
+    var produtos = await db.Produtos.ToListAsync();
 
-app.MapGet("/produtos", () => 
-{
     return Results.Ok(produtos);
 });
 
-app.MapGet("/produtos/{id:int}", (int id) =>
+app.MapGet("/produtos/{id:int}", async (int id, AppDbContext db) =>
 {
-    Produto? produto = null;
-    for(int i = 0; i < produtos.Count; i++)
-    {
-        if(produtos[i].Id == id)
-        {
-            produto = produtos[i];
-        }
-    }
-    if(produto == null)
+    var produto = await db.Produtos.FindAsync(id);
+
+    if (produto == null)
     {
         return Results.NotFound();
     }
-    else
-    {
-        return Results.Ok(produto);
-    }
-} );
 
-app.MapPost("/produtos", (Produto produtoReq) =>
-{
-   produtos.Add(produtoReq); 
-   return Results.Created($"/produtos/{produtoReq.Id}",produtoReq);
+    return Results.Ok(produto);
 });
 
-
-app.MapPut("/produtos/{id:int}",  (int id, Produto produtoAtualizado) =>
+app.MapPost("/produtos", async (Produto produto, AppDbContext db) =>
 {
-    int index = produtos.FindIndex(produto => produto.Id == id);
-    if(index == -1)
+    db.Produtos.Add(produto);
+    await db.SaveChangesAsync();
+
+    return Results.Created($"/produtos/{produto.Id}", produto);
+});
+
+app.MapPut("/produtos/{id:int}", async (int id, Produto produtoAtualizado, AppDbContext db) =>
+{
+    var produto = await db.Produtos.FindAsync(id);
+    if (produto == null)
     {
         return Results.NotFound();
     }
-    else
-    {
-        produtos[index] = produtoAtualizado;
-        return Results.Ok(produtos[index]);
-    }
+
+    produto.Nome = produtoAtualizado.Nome;
+    produto.Preco = produtoAtualizado.Preco;
+    produto.Ativo = produtoAtualizado.Ativo;
+
+    await db.SaveChangesAsync();
+
+    return Results.Ok(produto);
 });
 
-app.MapDelete("/produtos/{id:int}", (int id) =>
+app.MapDelete("/produtos/{id:int}", async (int id, AppDbContext db) =>
 {
-    int index = produtos.FindIndex(x => x.Id == id);
-    if(index == -1)
+    var produto = await db.Produtos.FindAsync(id);
+    if (produto == null)
     {
         return Results.NotFound();
     }
-    else
-    {
-        produtos.RemoveAt(index);
-        return Results.NoContent();
-    }
-});
 
+    db.Produtos.Remove(produto);
+    await db.SaveChangesAsync();
+
+    return Results.NoContent();
+});
 
 app.Run();

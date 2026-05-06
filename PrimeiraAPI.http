@@ -1,0 +1,41 @@
+@baseUrl = http://localhost:5286
+
+GET {{baseUrl}}/
+
+###
+
+GET {{baseUrl}}/status
+
+###
+
+GET {{baseUrl}}/produtos
+
+###
+
+GET {{baseUrl}}/produtos/1
+
+###
+
+POST {{baseUrl}}/produtos
+Content-Type: application/json
+
+{
+  "nome": "Teclado Mecanico",
+  "preco": 249.90,
+  "ativo": true
+}
+
+###
+
+PUT {{baseUrl}}/produtos/1
+Content-Type: application/json
+
+{
+  "nome": "Produto A Atualizado",
+  "preco": 12.99,
+  "ativo": true
+}
+
+###
+
+DELETE {{baseUrl}}/produtos/1
