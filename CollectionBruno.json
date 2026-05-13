@@ -1,0 +1,169 @@
+{
+  "info": {
+    "name": "MinhaAPI",
+    "description": null,
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get Status",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:5286/status",
+          "protocol": "http",
+          "host": [
+            "localhost:5286"
+          ],
+          "path": [
+            "status"
+          ],
+          "query": [],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "Get Produtos",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:5286/produtos",
+          "protocol": "http",
+          "host": [
+            "localhost:5286"
+          ],
+          "path": [
+            "produtos"
+          ],
+          "query": [],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "Get By Id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:5286/produtos/3",
+          "protocol": "http",
+          "host": [
+            "localhost:5286"
+          ],
+          "path": [
+            "produtos",
+            "3"
+          ],
+          "query": [],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "Post Produto",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:5286/produtos",
+          "protocol": "http",
+          "host": [
+            "localhost:5286"
+          ],
+          "path": [
+            "produtos"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"Id\": 3,\n  \"Nome\": \"teeeeste Produto\",\n  \"Preco\": 50.22,\n  \"Ativo\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Put Produto",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:5286/produtos/3",
+          "protocol": "http",
+          "host": [
+            "localhost:5286"
+          ],
+          "path": [
+            "produtos",
+            "3"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "\n  {\n    \"id\": 3,\n    \"nome\": \"Produto Z\",\n    \"preco\": 15.75,\n    \"ativo\": false\n  }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Delete Produto",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:5286/produtos/2",
+          "protocol": "http",
+          "host": [
+            "localhost:5286"
+          ],
+          "path": [
+            "produtos",
+            "2"
+          ],
+          "query": [],
+          "variable": []
+        }
+      }
+    }
+  ],
+  "variable": []
+}
